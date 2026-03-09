@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * StudentRepository class handles all database operations (CRUD) for the Student entity.
- *
  * This class is responsible for connecting to a MySQL database and performing
  * Create, Read, Update, and Delete operations using JDBC PreparedStatements.
  * Database credentials are loaded from environment variables via dotenv.
@@ -25,7 +24,7 @@ public class StudentRepository {
         this.PASSWORD = dotenv.get("DB_PASS");
     }
 
-    public int addStudent(Student student) {
+    public void addStudent(Student student) {
         String sql = "INSERT INTO students (name, course, age) VALUES(?, ?, ?)";
         try {
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -34,7 +33,7 @@ public class StudentRepository {
             statement.setString(2, student.getCourse());
             statement.setInt(3, student.getAge());
 
-            return statement.executeUpdate();
+            statement.executeUpdate();
 
 
         } catch (SQLException e) {
@@ -64,9 +63,10 @@ public class StudentRepository {
     public List<Student> getAllStudents() {
         String sql = "SELECT * FROM STUDENTS";
         List<Student> students = new ArrayList<>();
-        try {
-            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (
+                Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+                PreparedStatement statement = connection.prepareStatement(sql)
+                ){
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -84,18 +84,23 @@ public class StudentRepository {
         }
     }
 
-    public Student getStudentId(int id) throws SQLException {
+    public Student getStudentId(int id) {
         String sql = "SELECT * FROM STUDENTS WHERE id = ?";
-        Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        PreparedStatement preparedStatement = connection.prepareStatement((sql));
-        preparedStatement.setInt(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return new Student(
-                resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getString("course"),
-                resultSet.getInt("age"));
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement((sql));
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return new Student(
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("course"),
+                    resultSet.getInt("age"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
 
     public void deleteStudent(int id){
         String sql = "DELETE FROM students WHERE id = ?";
