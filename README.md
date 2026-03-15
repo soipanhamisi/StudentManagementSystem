@@ -15,7 +15,8 @@ StudentManagementSystem/
 │   │   │   ├── models/
 │   │   │   │   └── Student.java             # Student entity model
 │   │   │   └── repositories/
-│   │   │       └── StudentRepository.java   # Database operations (CRUD)
+│   │   │       ├── StudentRepository.java   # Repository contract for student CRUD operations
+│   │   │       └── SqlJdbcStudentRepository.java # JDBC implementation of the repository
 │   │   └── resources/
 │   │       └── db/migration/
 │   │           ├── V1__init_schema.sql      # Schema creation script
@@ -33,7 +34,7 @@ StudentManagementSystem/
 Entry point of the application. Initializes the console menu and starts the user interface.
 
 ### ConsoleMenu.java
-Handles all user interactions through a command-line menu. Displays options for adding, viewing, updating, and deleting student records. Accepts comma-separated input from users and delegates operations to StudentRepository.
+Handles all user interactions through a command-line menu. Displays options for adding, viewing, updating, and deleting student records. Accepts comma-separated input from users and delegates operations through the repository abstraction.
 
 ### DbMigration.java
 Manages database initialization using Flyway. Loads database credentials from environment variables, configures the MySQL connection, and executes pending database migrations automatically when the application starts.
@@ -42,7 +43,10 @@ Manages database initialization using Flyway. Loads database credentials from en
 Entity model representing a student record. Contains fields for id (auto-increment), name, course, and age. Provides constructors for creating new students (without id) and retrieving existing students (with id).
 
 ### StudentRepository.java
-Data access layer responsible for all database operations using JDBC and PreparedStatements. Implements CRUD operations: addStudent(), getAllStudents(), getStudentId(), updateStudent(), and deleteStudent(). Loads database credentials from environment variables and includes SQL injection prevention through input validation.
+Interface that defines the student data access contract. Declares the core CRUD operations used by the application so the console layer depends on an abstraction rather than a specific database implementation.
+
+### SqlJdbcStudentRepository.java
+Concrete JDBC implementation of `StudentRepository`. Connects to MySQL using environment-based configuration, executes SQL statements with `PreparedStatement`, and maps database rows to `Student` objects.
 
 ## Database Migrations
 
