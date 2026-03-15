@@ -74,7 +74,7 @@ public class SqlJdbcStudentRepository implements StudentRepository{
             throw new IllegalArgumentException("Invalid column name: " +
                     columnName);
         }
-        String sql = "UPDATE students SET " + columnName + " = ? WHERE id == ?";
+        String sql = "UPDATE students SET " + columnName + " = ? WHERE id = ?";
 
         try(
                 Connection connection = DriverManager.getConnection(JDBCURL, USERNAME, PASSWORD);
