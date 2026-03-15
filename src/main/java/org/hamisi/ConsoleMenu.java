@@ -1,6 +1,8 @@
 package org.hamisi;
 
 import org.hamisi.models.Student;
+import org.hamisi.repositories.SqlJdbcStudentRepository;
+import org.hamisi.repositories.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.Scanner;
  */
 
 public class ConsoleMenu {
-    private final StudentRepository studentRepository = new StudentRepository();
+    private final StudentRepository studentRepository = new SqlJdbcStudentRepository();
     private final Scanner scanner = new Scanner(System.in);
 
     public void displayMenu(){
@@ -52,7 +54,7 @@ public class ConsoleMenu {
 
                 case "2":
                     List<Student> allStudents = new ArrayList<>();
-                    allStudents = studentRepository.getAllStudents();
+                    allStudents = studentRepository.getAllStudent();
                     System.out.println("id, name, course, age");
                     for (Student temp : allStudents){
                         System.out.println(
@@ -68,7 +70,7 @@ public class ConsoleMenu {
                     System.out.println("Enter student id, field name and value(comma-seperated)");
                     String updates = scanner.nextLine();
                     String[] updates2 = updates.split(",");
-                    studentRepository.updateStudent(Integer.parseInt(updates2[0].trim()), updates2[1].trim(), updates2[2].trim());
+                    studentRepository.updateStudent(updates2[1].trim(), Integer.parseInt(updates2[0].trim()), updates2[2].trim());
                     System.out.println("update successful...");
                     break;
 
