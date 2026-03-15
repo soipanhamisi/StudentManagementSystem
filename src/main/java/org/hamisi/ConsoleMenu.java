@@ -1,7 +1,6 @@
 package org.hamisi;
 
 import org.hamisi.models.Student;
-import org.hamisi.repositories.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
