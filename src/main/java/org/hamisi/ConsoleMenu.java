@@ -71,7 +71,6 @@ public class ConsoleMenu {
                     String updates = scanner.nextLine();
                     String[] updates2 = updates.split(",");
                     studentRepository.updateStudent(updates2[1].trim(), Integer.parseInt(updates2[0].trim()), updates2[2].trim());
-                    System.out.println("update successful...");
                     break;
 
                 case "4":

@@ -30,7 +30,7 @@ public class SqlJdbcStudentRepository implements StudentRepository{
             preparedStatement.execute();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Could not get students", e);
+            System.out.println("Could not get students" + e);
         }
     }
 
@@ -59,7 +59,8 @@ public class SqlJdbcStudentRepository implements StudentRepository{
             return students;
 
         }catch (SQLException e){
-            throw new RuntimeException("Could not get students", e);
+            System.out.println("Could not get students" + e);
+            return new ArrayList<Student>();
         }
     }
 
@@ -80,11 +81,12 @@ public class SqlJdbcStudentRepository implements StudentRepository{
                 Connection connection = DriverManager.getConnection(JDBCURL, USERNAME, PASSWORD);
                 PreparedStatement preparedStatement = connection.prepareStatement(sql)
         ){
-            if (columnName == "age"){
+            if (columnName.equals("age")){
                 try {
                     preparedStatement.setInt(1, Integer.parseInt(value));
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException("Invalid Number entered", e);
+                    System.out.println(e.toString());
+                   return;
                 }
                 preparedStatement.setInt(2, id);
             } else {
@@ -92,10 +94,11 @@ public class SqlJdbcStudentRepository implements StudentRepository{
                 preparedStatement.setInt(2, id);
             }
             int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("update successful...");
             System.out.println("Rows affected: " + rowsAffected);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.toString());;
         }
     }
 
@@ -112,7 +115,7 @@ public class SqlJdbcStudentRepository implements StudentRepository{
             preparedStatement.setInt(1, id);
             System.out.println("Rows Affected: " + preparedStatement.executeUpdate());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.toString());
         }
     }
 }
